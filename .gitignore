@@ -1,0 +1,38 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Rproj
+
+hepatitiscint.Rproj
+deploying_app.R
+testing.R
+deploy.R
+
+# packrat library folder (automatically added due to packract being initialised)
+packrat/lib*/
+
+# 'data' folder #
+data/
+
+# images folder #
+www/
+
+# folder created when deploying an app #
+rsconnect/
+
+# Common text files that may contain data #
+*.[cC][sS][vV]
+*.[tT][xX][tT]
+
+# Excel files #
+*.[xX][lL][sS][xXmMtT]?
+
+# SPSS formats #
+*.[sS][aA][vV]
+
+# R data files #
+*.[rR][dD][aA][tT][aA]
+*.[rR][dD][sS]
+
+#
