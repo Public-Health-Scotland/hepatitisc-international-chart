@@ -8,16 +8,21 @@
 ##Packages 
 library(dplyr) #data manipulation
 library(plotly) #charts
-library(shiny)
+library(shiny) #shiny app
 
 #Preparing data - not needed unless new data coming through
-#library (readr)
- 
-#data <- read_csv("./data/hepatitisc_international.csv") %>%
-#   mutate_if(is.character, factor) %>%  #converting characters into factors
-#   setNames(tolower(names(.)))
- 
-#saveRDS(data, "./data/hepatitisc_international.rds")
+library (readr) #for reading in csv
+library(janitor) #for data cleaning
+
+#Set filepath
+filepath <- "/PHI_conf/ScotPHO/Website/Charts/Health Conditions/Hepatitis C/shiny_data"
+
+data <- read_csv(paste0(filepath, "/hepatitisc_international.csv")) |> 
+  mutate_if(is.character, factor) |>  #converting characters into factors
+  clean_names()
+
+#Save as rds
+saveRDS(data, paste0(filepath, "/hepatitisc_international.rds"))
 
 data <- readRDS("./data/hepatitisc_international.rds")
 
