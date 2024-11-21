@@ -7,11 +7,12 @@
 ############################.
 ##Packages 
 library(dplyr) #data manipulation
-library(plotly) #charts
+library(highcharter) #charts
 library(shiny) #shiny app
+library(phsstyles) #chart colours
 
 #Preparing data - not needed unless new data coming through
-library (readr) #for reading in csv
+library(readr) #for reading in csv
 library(janitor) #for data cleaning
 
 #Set filepath
@@ -24,13 +25,8 @@ data <- read_csv(paste0(filepath, "/hepatitisc_international.csv")) |>
 #Save as rds
 saveRDS(data, paste0(filepath, "/hepatitisc_international.rds"))
 
-data <- readRDS("./data/hepatitisc_international.rds")
+data <- readRDS(paste0(filepath, "/hepatitisc_international.rds"))
 
-#ScotPHO logo. 
-#Needs to be https address or if local in code 64 (the latter does not work with 4.7 plotly)
-scotpho_logo <-  list(source ="https://raw.githubusercontent.com/jvillacampa/test/master/scotpho.png",
-                      xref = "paper", yref = "paper",
-                      x= -0.09, y= 1.16, sizex = 0.26, sizey = 0.20, opacity = 1)
 
 ############################.
 ## Visual interface ----
@@ -46,10 +42,10 @@ ui <- fluidPage(style="width: 650px; height: 500px; ",
                          )
                 ),
                 div(style= "width:100%; float: left;", #Main panel
-                  plotlyOutput("chart", width = "100%", height = "350px"),
+                  highchartOutput("column_chart"),
                   p(div(style = "width: 80%; float: left;", #Footer
-                        HTML("Source: <a href='https://www.who.int/publications/i/item/global-hepatitis-report-2017'>
-                             World Health Organisation. 2017. Global Hepatitis Report.</a>")),
+                        HTML("Source: <a href='https://www.who.int/publications/i/item/9789240091672'>
+                             World Health Organisation. 2024. Global Hepatitis Report.</a>")),
                     div(style = "width: 20%; float: left",
                         downloadLink('download_data', 'Download data'))
                         )
@@ -68,30 +64,24 @@ server <- function(input, output) {
   
   ############################.
   #Visualization
-  output$chart <- renderPlotly({
-
-    #Data for plot
-    data_chart <- data %>% subset(measure==input$measure)
-
-    #y axis title
-    yaxistitle <- ifelse(input$measure == "Prevalence", "Prevalence (%)", 
-                         "Millions of people")
+  
+  output$column_chart <- renderHighchart({
     
-    plot_ly(data=data_chart, x=~region, y = ~value, 
-                    type = "bar",  marker = list(color = '#08519c'),
-                    width = 650, height = 350) %>% 
-    #Layout
-      layout(annotations = list(), #It needs this because of a buggy behaviour
-           yaxis = list(title = yaxistitle, rangemode="tozero", fixedrange=TRUE), 
-           xaxis = list(title = "",  fixedrange=TRUE,
-                        categoryorder="array", #order of plotting
-                        categoryarray = ~value),  
-           font = list(family = 'Arial, sans-serif'), #font
-           margin = list(pad = 4, t = 30, b = 100), #margin-paddings
-           images = scotpho_logo) %>% 
-      config(displayModeBar= T, displaylogo = F, collaborate=F, editable =F) # taking out plotly logo and collaborate button
+    #Data for plot
+    data_chart <- data |> subset(measure == input$measure)
+    
+    #y axis title
+    yaxistitle <- ifelse(input$measure == "Prevalence", "Prevalence (%)",
+                           "Millions of people")
 
-    }) 
+    data_chart |> 
+      hchart("column", hcaes(y = value, x = region)) |> 
+      hc_colors(c(phs_colors("phs-blue"))) |> 
+      hc_xAxis(title = list(text = "Region")) |> 
+      hc_yAxis(title = list(text = yaxistitle))
+    
+    
+  })
   
   } # end of server part
 
