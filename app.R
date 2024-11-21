@@ -75,7 +75,7 @@ server <- function(input, output) {
                            "Millions of people")
 
     data_chart |> 
-      hchart("column", hcaes(y = value, x = region)) |> 
+      hchart("column", hcaes(y = value, x = region), name = yaxistitle) |> 
       hc_colors(c(phs_colors("phs-blue"))) |> 
       hc_xAxis(title = list(text = "Region")) |> 
       hc_yAxis(title = list(text = yaxistitle))
