@@ -1,4 +1,6 @@
 #Code to create chart of hepatitis c by board.
+# This script prepares a data file and a shiny app to be embedded on the following page of the scotpho website: https://www.scotpho.org.uk/health-conditions/hepatitis-c/data/international-comparisons/
+#See Hepatitis C SOP at \\Isdsf00d03\ScotPHO\Website\Topics\Hepatitis C for instructions on running the data
 
 ############################.
 ## Global ----
@@ -11,21 +13,22 @@ library(highcharter) #charts
 library(shiny) #shiny app
 library(phsstyles) #chart colours
 
-#Preparing data - not needed unless new data coming through
-library(readr) #for reading in csv
-library(janitor) #for data cleaning
+# #Preparing data - not needed unless new data coming through
+# library(readr) #for reading in csv
+# library(janitor) #for data cleaning
 
-#Set filepath
-filepath <- "/PHI_conf/ScotPHO/Website/Charts/Health Conditions/Hepatitis C/shiny_data"
+# #Set filepath
+#filepath <- "/PHI_conf/ScotPHO/Website/Charts/Health Conditions/Hepatitis C/shiny_data"
+# 
+# data <- read_csv(paste0(filepath, "/hepatitisc_international.csv")) |> 
+#   mutate_if(is.character, factor) |>  #converting characters into factors
+#   clean_names()
+# 
+# #Save as rds
+# saveRDS("data/hepatitisc_international.rds")
+# 
 
-data <- read_csv(paste0(filepath, "/hepatitisc_international.csv")) |> 
-  mutate_if(is.character, factor) |>  #converting characters into factors
-  clean_names()
-
-#Save as rds
-saveRDS(data, paste0(filepath, "/hepatitisc_international.rds"))
-
-data <- readRDS(paste0(filepath, "/hepatitisc_international.rds"))
+data <- readRDS("data/hepatitisc_international.rds")
 
 
 ############################.
@@ -44,7 +47,7 @@ ui <- fluidPage(style="width: 650px; height: 500px; ",
                 div(style= "width:100%; float: left;", #Main panel
                   highchartOutput("column_chart"),
                   p(div(style = "width: 80%; float: left;", #Footer
-                        HTML("Source: <a href='https://www.who.int/publications/i/item/9789240091672'>
+                        HTML("Source: <a href='https://www.who.int/publications/i/item/9789240091672' target='_blank'>
                              World Health Organisation. 2024. Global Hepatitis Report.</a>")),
                     div(style = "width: 20%; float: left",
                         downloadLink('download_data', 'Download data'))
